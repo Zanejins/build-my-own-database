@@ -163,9 +163,8 @@ void serialize_row(Row* source,void* destination) {
 }
 void* row_slot(Table* table,uint32_t row_num) {
     uint32_t page_num = row_num / ROW_PER_PAGE;
-    void* page = table -> pages[page_num];
+    void* page=table->pages[page_num];
     if(!page) {
-        //allocate memory only when we try to access page
         page = table->pages[page_num] = malloc(PAGE_SIZE);
     }
     uint32_t row_offset = row_num % ROW_PER_PAGE;
@@ -208,6 +207,9 @@ ExecuteResult execute_statement(Statement* statement,Table* table) {
 
 Table* new_table() {
     Table* table = (Table*)malloc(sizeof(Table));
+    for(int i=0;i<TABLE_MAX_PAGES;i++) {
+        table->pages[i]= nullptr;
+    }
     table->num_rows=0;
     return table;
 }
